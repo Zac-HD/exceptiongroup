@@ -139,10 +139,13 @@ class PatchedTracebackException(traceback.TracebackException):
         exc = self
         if chain:
             while exc:
-                if exc.__cause__ is not None:
+                if getattr(exc, "__cause__", None) is not None:
                     chained_msg = _cause_message
                     chained_exc = exc.__cause__
-                elif exc.__context__ is not None and not exc.__suppress_context__:
+                elif (
+                    getattr(exc, "__context__", None) is not None
+                    and not exc.__suppress_context__
+                ):
                     chained_msg = _context_message
                     chained_exc = exc.__context__
                 else:
